@@ -31,16 +31,22 @@ exports.getCoverSettings = async (req, res) => {
 exports.updateCoverSettings = async (req, res) => {
   try {
     const newSettings = req.body;
-    const setting = await Setting.findOneAndUpdate(
-      { key: 'cover_settings' },
-      {
-        $set: {
-          value: { ...defaultCover, ...newSettings },
-          updatedAt: new Date()
-        }
-      },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
-    );
+    const mergedValue = { ...defaultCover, ...newSettings };
+
+    // Dùng findOne + save để Mongoose Mixed type detect thay đổi đúng cách
+    let setting = await Setting.findOne({ key: 'cover_settings' });
+    if (setting) {
+      setting.value = mergedValue;
+      setting.updatedAt = new Date();
+      setting.markModified('value'); // Bắt buộc với Mixed type
+      await setting.save();
+    } else {
+      setting = await Setting.create({
+        key: 'cover_settings',
+        value: mergedValue,
+        updatedAt: new Date(),
+      });
+    }
 
     return res.json({
       success: true,

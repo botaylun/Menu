@@ -86,6 +86,31 @@ class PaperAudioSynthesizer {
 
 // 2. Class Quản lý Cuốn sách Menu 3D
 class MintyMenuFlipBook {
+  // Tính số món tối đa mỗi trang dựa trên kích thước màn hình thực tế
+  static _calcItemsPerPage() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const isPortrait = h > w; // Điện thoại cầm dọc
+
+    // Ước tính chiều cao trang sách (tỉ lệ 2:3 so với width)
+    // Trừ đi header zone (~90px), footer (~35px), padding (~40px)
+    const pageH = isPortrait ? (w * 1.5) : (w * 0.75);
+    const contentH = pageH - 165;
+    // Mỗi item ~52px (mobile) hoặc ~56px (desktop) + brand header ~30px
+    const itemH = w < 600 ? 50 : 55;
+    const maxByHeight = Math.max(3, Math.floor(contentH / itemH) - 1); // trừ 1 cho brand header
+
+    // Giới hạn thêm theo width
+    let maxByWidth;
+    if (w < 480) maxByWidth = 5;
+    else if (w < 600) maxByWidth = 6;
+    else if (w < 900) maxByWidth = isPortrait ? 6 : 8;
+    else if (w < 1200) maxByWidth = 8;
+    else maxByWidth = 12;
+
+    return Math.min(maxByWidth, maxByHeight);
+  }
+
   constructor(options = {}) {
     this.containerId = options.containerId || 'book';
     this.statusId = options.statusId || 'status';
@@ -93,7 +118,7 @@ class MintyMenuFlipBook {
     this.nextBtnId = options.nextBtnId || 'next';
     this.segId = options.segId || 'seg';
     this.tabsId = options.tabsId || 'tabs';
-    this.itemsPerPage = options.itemsPerPage || (window.innerWidth < 768 ? 6 : (window.innerWidth < 1024 ? 8 : 12));
+    this.itemsPerPage = options.itemsPerPage || MintyMenuFlipBook._calcItemsPerPage();
 
     this.pageFlip = null;
     this.audio = new PaperAudioSynthesizer();
@@ -781,7 +806,7 @@ class MintyMenuFlipBook {
     }
   }
 
-  // Gắn các phím tắt bàn phím
+  // Gắn các phím tắt bàn phím và xử lý xoay màn hình
   _bindGlobalEvents() {
     window.addEventListener('keydown', (e) => {
       if (document.querySelector('dialog[open]')) return; // Không can thiệp khi đang mở modal
@@ -796,7 +821,33 @@ class MintyMenuFlipBook {
     const nextBtn = document.getElementById(this.nextBtnId);
     if (prevBtn) prevBtn.onclick = () => this.flipPrev();
     if (nextBtn) nextBtn.onclick = () => this.flipNext();
+
+    // Tự tính lại itemsPerPage khi xoay màn hình điện thoại
+    let resizeTimer = null;
+    const onOrientationChange = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const newCount = MintyMenuFlipBook._calcItemsPerPage();
+        if (newCount !== this.itemsPerPage) {
+          this.itemsPerPage = newCount;
+          const curPage = this.pageFlip ? this.pageFlip.getCurrentPageIndex() : 0;
+          if (this.pageFlip) {
+            try { this.pageFlip.destroy(); } catch (e) { }
+            this.pageFlip = null;
+          }
+          this._buildPagesData();
+          this._renderBookDOM();
+          this._initStPageFlip(curPage);
+          this._renderTabs();
+          this._updateNavigation();
+        }
+      }, 300);
+    };
+
+    window.addEventListener('orientationchange', onOrientationChange);
+    window.addEventListener('resize', onOrientationChange);
   }
+
 }
 
 // Xuất ra phạm vi toàn cục (Global Scope) cho Vanilla JS

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/db');
 const mongoose = require('mongoose');
 
@@ -13,10 +14,17 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: '*', // Cho phép mọi nguồn (localhost:8080, vercel.app, v.v.)
+  // Cho phép: localhost, Vercel, và null (file:// khi test local)
+  origin: (origin, callback) => callback(null, true),
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
+
+// Serve static files từ thư mục gốc (cho local dev: http://localhost:5000)
+if (!process.env.VERCEL) {
+  app.use(express.static(path.join(__dirname, '..')));
+}
 
 // Hỗ trợ upload ảnh dạng Base64 dung lượng lớn (lên tới 50MB)
 app.use(express.json({ limit: '50mb' }));
