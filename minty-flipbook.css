@@ -83,7 +83,7 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding: 28px 28px 22px;
+  padding: 26px 28px 20px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -481,11 +481,16 @@
 /* 8. Tinh chỉnh danh sách món trong trang ruột - Fix cứng trang sách */
 .page-inner .list {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
   list-style: none;
   margin: 0;
   padding: 0;
   border-top: 1px solid var(--line);
+}
+.page-inner .list::-webkit-scrollbar {
+  display: none;
 }
 
 .page-inner .list li {
@@ -509,8 +514,8 @@
 }
 
 .page-inner .list img {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 6px;
   object-fit: cover;
   background: var(--thumb);

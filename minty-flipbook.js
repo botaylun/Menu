@@ -17,29 +17,16 @@ class PaperAudioSynthesizer {
 
 // 2. Class Quản lý Cuốn sách Menu 3D
 class MintyMenuFlipBook {
-  // Tính số món tối đa mỗi trang dựa trên kích thước màn hình thực tế
-  static _calcItemsPerPage() {
+  // Tính số dòng tối đa mỗi trang (12 dòng chuẩn như ảnh mẫu, lấp đầy không gian)
+  static _calcItemsPerPage(adminMode = false) {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    const isPortrait = h > w; // Điện thoại cầm dọc
+    const isPortrait = h > w;
 
-    // Ước tính chiều cao trang sách (tỉ lệ 2:3 so với width)
-    // Trừ đi header zone (~90px), footer (~35px), padding (~40px)
-    const pageH = isPortrait ? (w * 1.5) : (w * 0.75);
-    const contentH = pageH - 165;
-    // Mỗi item ~52px (mobile) hoặc ~56px (desktop) + brand header ~30px
-    const itemH = w < 600 ? 50 : 55;
-    const maxByHeight = Math.max(3, Math.floor(contentH / itemH) - 1); // trừ 1 cho brand header
-
-    // Giới hạn thêm theo width
-    let maxByWidth;
-    if (w < 480) maxByWidth = 5;
-    else if (w < 600) maxByWidth = 6;
-    else if (w < 900) maxByWidth = isPortrait ? 6 : 8;
-    else if (w < 1200) maxByWidth = 8;
-    else maxByWidth = 12;
-
-    return Math.min(maxByWidth, maxByHeight);
+    if (w < 480) return 7;
+    if (w < 700) return 9;
+    if (w < 1000) return isPortrait ? 9 : 11;
+    return 12; // 12 dòng chuẩn như ảnh mẫu: lấp đầy toàn bộ trang, gộp các hãng chung trang
   }
 
   constructor(options = {}) {
@@ -49,7 +36,8 @@ class MintyMenuFlipBook {
     this.nextBtnId = options.nextBtnId || 'next';
     this.segId = options.segId || 'seg';
     this.tabsId = options.tabsId || 'tabs';
-    this.itemsPerPage = options.itemsPerPage || MintyMenuFlipBook._calcItemsPerPage();
+    this.adminMode = false;
+    this.itemsPerPage = options.itemsPerPage || MintyMenuFlipBook._calcItemsPerPage(false);
 
     this.pageFlip = null;
     this.audio = new PaperAudioSynthesizer();
@@ -57,7 +45,6 @@ class MintyMenuFlipBook {
     this.items = [];
     this.pageData = []; // Danh sách metadata các trang
     this.zonePageMap = {}; // Map từ zoneKey -> pageIndex đầu tiên
-    this.adminMode = false;
     this.flashItem = null;
     this.onEditItem = options.onEditItem || null;
     this.onDeleteItem = options.onDeleteItem || null;
@@ -71,6 +58,7 @@ class MintyMenuFlipBook {
     this.zones = zones || [];
     this.items = items || [];
     this.adminMode = admin;
+    this.itemsPerPage = MintyMenuFlipBook._calcItemsPerPage(admin);
 
     this._buildPagesData();
     this._renderBookDOM();
@@ -115,6 +103,7 @@ class MintyMenuFlipBook {
     this.zones = zones || [];
     this.items = items || [];
     this.adminMode = admin;
+    this.itemsPerPage = MintyMenuFlipBook._calcItemsPerPage(admin);
     if (coverData) this.coverData = coverData;
 
     if (this.pageFlip) {
@@ -174,7 +163,7 @@ class MintyMenuFlipBook {
 
       rows.forEach(r => {
         if (r.h !== undefined) {
-          if (currentRows.length >= this.itemsPerPage - 2) flush();
+          if (currentRows.length >= this.itemsPerPage - 1) flush();
           currentBrand = r.h;
           currentRows.push(r);
           return;
@@ -203,14 +192,6 @@ class MintyMenuFlipBook {
         });
       });
     });
-
-    // Đảm bảo số trang ruột là số chẵn để Bìa Sau luôn nằm đúng vị trí đóng sách ở chế độ Double Page Spread
-    // Trang 0: Bìa trước
-    // Các trang ruột: từ 1 đến N
-    // Bìa sau: N + 1
-    if ((this.pageData.length - 1) % 2 !== 0) {
-      this.pageData.push({ type: 'notes' }); // Trang ghi chú & câu chuyện thương hiệu
-    }
 
     // Trang cuối cùng: Bìa sau (Back Cover)
     this.pageData.push({ type: 'back-cover' });
@@ -244,10 +225,6 @@ class MintyMenuFlipBook {
         pageEl.classList.add('page-inner');
         pageEl.setAttribute('data-density', 'soft');
         pageEl.innerHTML = this._createTocHTML();
-      } else if (p.type === 'notes') {
-        pageEl.classList.add('page-inner');
-        pageEl.setAttribute('data-density', 'soft');
-        pageEl.innerHTML = this._createNotesHTML();
       } else {
         pageEl.classList.add('page-inner');
         pageEl.setAttribute('data-density', 'soft');
@@ -395,28 +372,6 @@ class MintyMenuFlipBook {
     `;
   }
 
-  // HTML Trang Ghi Chú & Câu Chuyện Thương Hiệu (Notes Page)
-  _createNotesHTML() {
-    return `
-      <div class="page-content">
-        <div class="eyebrow">CÂU CHUYỆN MINTYMART</div>
-        <h2 class="toc-title">Cam Kết Chất Lượng</h2>
-        <div style="font-size:13px;line-height:1.7;color:var(--mut);margin-top:14px;flex:1">
-          <p>Mỗi que kem tại <b>MintyMart</b> đều được bảo quản ở chuẩn nhiệt độ đông sâu âm 18°C, giữ trọn hương vị tươi mát nguyên bản từ nhà sản xuất.</p>
-          <div style="margin:20px 0;padding:14px;border:1px dashed var(--gold);border-radius:8px;background:var(--page2)">
-            <b style="color:var(--gold);display:block;margin-bottom:6px">🍦 Ưu đãi đặc biệt:</b>
-            <span>Mua từ 5 que kem bất kỳ để nhận túi giữ nhiệt chuyên dụng miễn phí!</span>
-          </div>
-          <p>Quý khách vui lòng liên hệ nhân viên hoặc số hotline tại bìa sau để được giao hàng tận nơi nhanh chóng.</p>
-        </div>
-        <div class="foot" style="margin-top:auto">
-          <span>GHI CHÚ</span>
-          <b>${String(this.pageData.length - 1).padStart(2, '0')}</b>
-        </div>
-      </div>
-    `;
-  }
-
   // HTML Bìa Sau (Back Cover)
   _createBackCoverHTML() {
     const c = Object.assign({
@@ -467,11 +422,12 @@ class MintyMenuFlipBook {
     lab.textContent = `${String(p.zi + 1).padStart(2, '0')} / ${p.z.name.toUpperCase()} ${p.parts > 1 ? ` · ${p.part + 1}/${p.parts}` : ''}`;
 
     const h = document.createElement('h2');
-    h.style.cssText = 'font-size:clamp(22px, 3.5vw, 30px);margin:6px 0 4px;font-family:Noto Serif, serif;';
+    h.style.cssText = 'font-size:clamp(22px, 3.2vw, 28px);margin:6px 0 4px;font-family:Noto Serif, serif;';
     h.textContent = `${p.z.flag} ${p.z.name}`;
 
     const sub = document.createElement('p');
     sub.className = 'sub';
+    sub.style.cssText = 'margin:0 0 14px;font-size:13px;';
     sub.textContent = `${p.z.desc} (${p.total} món)`;
 
     const ul = document.createElement('ul');
@@ -492,8 +448,8 @@ class MintyMenuFlipBook {
         im = document.createElement('img');
         im.src = it.img;
         im.alt = it.n;
-        im.width = 42;
-        im.height = 42;
+        im.width = 44;
+        im.height = 44;
         im.loading = 'lazy';
         im.setAttribute('role', 'button');
         im.tabIndex = 0;
