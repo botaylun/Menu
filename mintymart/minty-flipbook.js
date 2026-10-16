@@ -124,11 +124,12 @@ class MintyMenuFlipBook {
   }
 
   // Cập nhật lại dữ liệu khi Admin sửa/thêm/xóa món
-  update(zones, items, admin = false) {
+  update(zones, items, admin = false, coverData = null) {
     const curPage = this.pageFlip ? this.pageFlip.getCurrentPageIndex() : 0;
     this.zones = zones || [];
     this.items = items || [];
     this.adminMode = admin;
+    if (coverData) this.coverData = coverData;
 
     if (this.pageFlip) {
       try { this.pageFlip.destroy(); } catch (e) { }
@@ -333,19 +334,28 @@ class MintyMenuFlipBook {
 
   // HTML Bìa Trước (Front Cover)
   _createFrontCoverHTML() {
+    const c = Object.assign({
+      frontBadge: '★ MINTYMART COLLECTION ★',
+      frontTitle: 'THỰC ĐƠN KEM',
+      frontSub: 'Tuyển tập những hương vị kem mát lạnh trứ danh từ khắp nơi trên thế giới',
+      frontFooter: 'MINTYMART · PREMIUM GELATO',
+      backTitle: 'CẢM ƠN QUÝ KHÁCH',
+      backSub: 'Chúc bạn có những phút giây ngọt ngào và sảng khoái cùng kem ngon tại MintyMart.',
+    }, this.coverData || {});
+
     return `
       <div class="page-content cover-content">
         <div class="cover-border">
           <div>
-            <div class="cover-badge">★ MINTYMART COLLECTION ★</div>
-            <div class="cover-logo-box">
-              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e9be55' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a5 5 0 0 0-5 5c0 2.2 1.4 4.1 3.4 4.8L8 21a2 2 0 0 0 4 0l1-9.2A5 5 0 0 0 12 2z'/%3E%3Cpath d='M9.5 7a2.5 2.5 0 0 1 5 0'/%3E%3C/svg%3E" alt="Minty Logo">
+            <div class="cover-badge">${c.frontBadge}</div>
+            <div class="cover-logo-container">
+              <img src="mintymart-logo.png" alt="MintyMart Logo" class="cover-main-logo">
             </div>
-            <h1 class="cover-title">THỰC ĐƠN KEM</h1>
-            <p class="cover-sub">Tuyển tập những hương vị kem mát lạnh trứ danh từ khắp nơi trên thế giới</p>
+            <h1 class="cover-title">${c.frontTitle}</h1>
+            <p class="cover-sub">${c.frontSub}</p>
           </div>
           <div class="cover-footer">
-            <span>MINTYMART · PREMIUM GELATO</span>
+            <span>${c.frontFooter}</span>
             <span class="hint">📖 Vuốt hoặc bấm Trang sau để mở ➔</span>
           </div>
         </div>
@@ -410,18 +420,33 @@ class MintyMenuFlipBook {
 
   // HTML Bìa Sau (Back Cover)
   _createBackCoverHTML() {
+    const c = Object.assign({
+      backTitle: 'CẢM ƠN QUÝ KHÁCH',
+      backSub: 'Chúc bạn có những phút giây ngọt ngào và sảng khoái cùng kem ngon tại MintyMart.',
+    }, this.coverData || {});
+
+    const contactRows = (Array.isArray(c.contactRows) && c.contactRows.length)
+      ? c.contactRows
+      : [
+          { icon: '📍', label: 'Địa chỉ', value: c.address || 'Hệ thống MintyMart Toàn Quốc' },
+          { icon: '📞', label: 'Hotline / Zalo', value: c.hotline || '0909 888 999' },
+          { icon: '⏰', label: 'Giờ phục vụ', value: c.hours || '08:00 – 22:30 mỗi ngày' },
+          { icon: '🛵', label: 'Giao hàng', value: c.delivery || 'GrabFood · ShopeeFood · BeFood' }
+        ];
+
+    const rowsHTML = contactRows.map(r => `
+      <div>${r.icon ? `<span>${r.icon}</span>` : ''}<b>${r.label}:</b> <span>${r.value}</span></div>
+    `).join('');
+
     return `
       <div class="page-content cover-content">
         <div class="cover-border">
           <div class="back-cover-box">
             <div style="font-size:36px;margin-bottom:8px">🍧</div>
-            <h3>CẢM ƠN QUÝ KHÁCH</h3>
-            <p>Chúc bạn có những phút giây ngọt ngào và sảng khoái cùng kem ngon tại MintyMart.</p>
+            <h3>${c.backTitle}</h3>
+            <p>${c.backSub}</p>
             <div class="contact-card">
-              <div>📍 <b>Địa chỉ:</b> Chi nhánh MintyMart toàn quốc</div>
-              <div>📞 <b>Hotline / Zalo:</b> 090x xxx xxx</div>
-              <div>⏰ <b>Giờ phục vụ:</b> 08:00 – 22:30 mỗi ngày</div>
-              <div>🛵 <b>Giao hàng:</b> GrabFood · ShopeeFood · BeFood</div>
+              ${rowsHTML}
             </div>
           </div>
           <div class="cover-footer">
@@ -535,19 +560,31 @@ class MintyMenuFlipBook {
   turnToPage(pageIndex) {
     if (!this.pageFlip) return;
     const target = Math.max(0, Math.min(pageIndex, this.pageData.length - 1));
-    this.pageFlip.turnToPage(target);
+    try {
+      this.pageFlip.flip(target, 'top');
+    } catch (e) {
+      this.pageFlip.turnToPage(target);
+    }
   }
 
   // Lật trang trước
   flipPrev() {
     if (!this.pageFlip) return;
-    this.pageFlip.flipPrev();
+    try {
+      this.pageFlip.flipPrev('top');
+    } catch (e) {
+      this.pageFlip.turnToPrevPage();
+    }
   }
 
   // Lật trang sau
   flipNext() {
     if (!this.pageFlip) return;
-    this.pageFlip.flipNext();
+    try {
+      this.pageFlip.flipNext('top');
+    } catch (e) {
+      this.pageFlip.turnToNextPage();
+    }
   }
 
   // Cập nhật trạng thái hiển thị thanh tiến trình và số trang
@@ -557,6 +594,10 @@ class MintyMenuFlipBook {
     const cur = this.pageFlip.getCurrentPageIndex();
     const total = this.pageFlip.getPageCount();
     const isPortrait = this.pageFlip.getOrientation() === 'portrait';
+
+    const pageCol = this.pageFlip.getPageCollection();
+    const spreads = (pageCol && pageCol.getSpread) ? pageCol.getSpread() : [];
+    const curSpreadIdx = (pageCol && pageCol.getCurrentSpreadIndex) ? pageCol.getCurrentSpreadIndex() : 0;
 
     // Cập nhật vị trí căn giữa cho bìa sách (tránh mảng trắng trống)
     const wrapper = document.querySelector('.book-wrapper');
@@ -580,31 +621,67 @@ class MintyMenuFlipBook {
       } else if (isPortrait) {
         statusEl.textContent = `Trang ${String(cur + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
       } else {
-        const p1 = cur;
-        const p2 = Math.min(cur + 1, total - 1);
-        statusEl.textContent = `Trang ${String(p1).padStart(2, '0')} — ${String(p2).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+        const spreadPages = spreads[curSpreadIdx] || [cur, Math.min(cur + 1, total - 1)];
+        const p1 = spreadPages[0] + 1;
+        const p2 = (spreadPages[1] !== undefined) ? spreadPages[1] + 1 : p1;
+        if (p1 === p2) {
+          statusEl.textContent = `Trang ${String(p1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+        } else {
+          statusEl.textContent = `Trang ${String(p1).padStart(2, '0')} — ${String(p2).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+        }
       }
     }
 
     // Cập nhật nút Trước / Sau
     const prevBtn = document.getElementById(this.prevBtnId);
     const nextBtn = document.getElementById(this.nextBtnId);
-    if (prevBtn) prevBtn.disabled = cur <= 0;
-    if (nextBtn) nextBtn.disabled = cur >= total - 1;
+    if (prevBtn) {
+      prevBtn.disabled = cur <= 0;
+      prevBtn.onclick = (e) => {
+        e.preventDefault();
+        this.flipPrev();
+      };
+    }
+    if (nextBtn) {
+      nextBtn.disabled = cur >= total - 1;
+      nextBtn.onclick = (e) => {
+        e.preventDefault();
+        this.flipNext();
+      };
+    }
 
-    // Cập nhật vạch phân đoạn (Segments)
+    // Cập nhật vạch phân đoạn (Segments) khớp chính xác 100% từng Spread
     const segEl = document.getElementById(this.segId);
     if (segEl) {
       segEl.replaceChildren();
-      const step = isPortrait ? 1 : 2;
-      for (let i = 0; i < total; i += step) {
-        const segItem = document.createElement('i');
-        if (cur >= i && cur < i + step) segItem.className = 'on';
-        segItem.title = `Chuyển tới trang ${i + 1}`;
-        segItem.onclick = () => this.turnToPage(i);
-        segEl.append(segItem);
+      if (spreads.length > 0) {
+        spreads.forEach((spreadPages, sIdx) => {
+          const segItem = document.createElement('i');
+          if (sIdx === curSpreadIdx) segItem.className = 'on';
+          const startPg = spreadPages[0] + 1;
+          segItem.title = `Chuyển tới trang ${startPg}`;
+          segItem.onclick = (e) => {
+            e.preventDefault();
+            this.turnToPage(spreadPages[0]);
+          };
+          segEl.append(segItem);
+        });
+      } else {
+        const step = isPortrait ? 1 : 2;
+        for (let i = 0; i < total; i += step) {
+          const segItem = document.createElement('i');
+          if (cur >= i && cur < i + step) segItem.className = 'on';
+          segItem.title = `Chuyển tới trang ${i + 1}`;
+          segItem.onclick = (e) => {
+            e.preventDefault();
+            this.turnToPage(i);
+          };
+          segEl.append(segItem);
+        }
       }
     }
+
+    this._updateActiveTab();
   }
 
   // Tạo các Tab nhóm kem
@@ -620,8 +697,11 @@ class MintyMenuFlipBook {
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'tab';
+      btn.setAttribute('data-zone-key', z.k);
       btn.textContent = `${z.flag} ${z.short}`;
-      btn.onclick = () => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        this.lastTargetZone = z.k;
         this.turnToPage(pageIdx);
       };
       tabsEl.append(btn);
@@ -631,13 +711,40 @@ class MintyMenuFlipBook {
   // Đánh dấu Tab đang hoạt động tương ứng với trang đang mở
   _updateActiveTab() {
     if (!this.pageFlip) return;
-    const cur = this.pageFlip.getCurrentPageIndex();
-    const currentPage = this.pageData[cur];
-    const currentZoneKey = (currentPage && currentPage.z) ? currentPage.z.k : null;
+
+    const pageCol = this.pageFlip.getPageCollection();
+    const spreads = (pageCol && pageCol.getSpread) ? pageCol.getSpread() : [];
+    const curSpreadIdx = (pageCol && pageCol.getCurrentSpreadIndex) ? pageCol.getCurrentSpreadIndex() : 0;
+    const currentPages = spreads[curSpreadIdx] || [this.pageFlip.getCurrentPageIndex()];
+
+    let activeZoneKey = null;
+
+    // 1. Kiểm tra xem zone người dùng vừa bấm có nằm trên spread hiện tại không
+    if (this.lastTargetZone) {
+      for (const pIdx of currentPages) {
+        const p = this.pageData[pIdx];
+        if (p && p.z && p.z.k === this.lastTargetZone) {
+          activeZoneKey = this.lastTargetZone;
+          break;
+        }
+      }
+    }
+
+    // 2. Nếu không, lấy zone của trang ruột đầu tiên trên spread hiện tại
+    if (!activeZoneKey) {
+      for (const pIdx of currentPages) {
+        const p = this.pageData[pIdx];
+        if (p && p.z && p.z.k) {
+          activeZoneKey = p.z.k;
+          break;
+        }
+      }
+    }
 
     const tabs = document.querySelectorAll('.tabs .tab');
     tabs.forEach(t => {
-      const isCurrent = currentZoneKey && t.textContent.includes(currentPage.z.short);
+      const zKey = t.getAttribute('data-zone-key');
+      const isCurrent = activeZoneKey && (zKey === activeZoneKey);
       t.setAttribute('aria-current', isCurrent ? 'true' : 'false');
       if (isCurrent) {
         t.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });

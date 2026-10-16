@@ -251,11 +251,84 @@
 }
 
 .cover-sub {
-  font-size: 13px;
-  color: var(--mut);
+  font-size: 13.5px;
+  color: var(--gold);
+  opacity: 0.92;
   line-height: 1.6;
   max-width: 320px;
   margin: 0 auto;
+}
+
+.cover-logo-container {
+  margin: 18px auto 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cover-main-logo {
+  width: 250px;
+  max-width: 85%;
+  height: auto;
+  max-height: 110px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 16px rgba(233, 190, 85, 0.45));
+}
+
+.back-cover-box h3 {
+  color: var(--gold);
+  font-family: 'Noto Serif', serif;
+  font-size: clamp(22px, 2.8vw, 28px);
+  margin: 6px 0;
+  letter-spacing: 0.05em;
+}
+
+.back-cover-box p {
+  color: var(--gold);
+  opacity: 0.95;
+  font-size: 13.5px;
+  line-height: 1.5;
+  max-width: 340px;
+  margin: 0 auto 10px;
+}
+
+/* Thẻ thông tin liên hệ bìa sau - Chữ vàng và kem sáng nổi bật, không bao giờ bị đen */
+.contact-card {
+  margin: 16px auto 0;
+  padding: 16px 20px;
+  border: 1.5px dashed var(--gold);
+  border-radius: 10px;
+  background: rgba(233, 190, 85, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  width: 100%;
+  max-width: 360px;
+  box-sizing: border-box;
+}
+
+.contact-card div {
+  color: #f6eedb !important;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.contact-card b {
+  color: var(--gold) !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.contact-card span {
+  color: #f6eedb !important;
+  font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 .cover-footer {
