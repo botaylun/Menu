@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return true;
+  }
   const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/mintymart';
   try {
     const conn = await mongoose.connect(uri, {
@@ -10,7 +13,7 @@ const connectDB = async () => {
     return true;
   } catch (error) {
     console.error(`[MongoDB] Lỗi kết nối: ${error.message}`);
-    console.warn(`[MongoDB] Lưu ý: Vui lòng đảm bảo MongoDB đang chạy tại ${uri} hoặc cập nhật MONGODB_URI trong file backend/.env`);
+    console.warn(`[MongoDB] Lưu ý: Vui lòng đảm bảo MongoDB đang chạy tại ${uri} hoặc cập nhật MONGODB_URI`);
     return false;
   }
 };
