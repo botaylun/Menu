@@ -14,6 +14,27 @@
   align-items: center;
   perspective: 2500px;
   touch-action: pan-y;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 900px) {
+  .book-wrapper.cover-front {
+    transform: translateX(-25%);
+  }
+  .book-wrapper.cover-back {
+    transform: translateX(25%);
+  }
+  .book-wrapper.open-spread {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 899px) {
+  .book-wrapper.cover-front,
+  .book-wrapper.cover-back,
+  .book-wrapper.open-spread {
+    transform: none !important;
+  }
 }
 
 /* Hiệu ứng bóng đổ nền mặt bàn dưới cuốn sách */
@@ -34,9 +55,9 @@
 .st-page-flip {
   position: relative;
   margin: 0 auto;
-  box-shadow: 0 16px 45px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--line);
+  background: transparent !important;
+  box-shadow: none !important;
   border-radius: 8px;
-  background: var(--page);
   overflow: visible !important;
 }
 
@@ -46,6 +67,16 @@
   color: var(--ink);
   overflow: hidden;
   box-sizing: border-box;
+  box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.45);
+}
+.page.--left {
+  border-radius: 8px 0 0 8px;
+}
+.page.--right {
+  border-radius: 0 8px 8px 0;
+}
+.page-cover {
+  border-radius: 8px !important;
 }
 
 .page-content {
@@ -65,16 +96,27 @@
   background: radial-gradient(circle at 50% 30%, var(--page) 0%, var(--page2) 100%);
 }
 
-/* 3. Hiệu ứng gáy sách (Spine Depth Shadow) khi mở 2 trang */
-/* Trang bên trái: Đổ bóng dần về phía mép phải (gáy sách ở giữa) */
+/* 3. Hiệu ứng gáy sách (Spine Depth Shadow) thu nhỏ thanh mảnh và tự nhiên */
 .page.--left .page-content::after {
   content: "";
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
-  width: 36px;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.22) 80%, rgba(0, 0, 0, 0.4) 100%);
+  width: 14px;
+  background: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.08) 60%, rgba(0, 0, 0, 0.18) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.page.--right .page-content::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 14px;
+  background: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, 0.08) 60%, rgba(0, 0, 0, 0.18) 100%);
   pointer-events: none;
   z-index: 10;
 }
@@ -99,8 +141,8 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: 8px;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.12), transparent);
+  width: 6px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.08), transparent);
   pointer-events: none;
   z-index: 10;
 }
@@ -111,15 +153,15 @@
   top: 0;
   right: 0;
   bottom: 0;
-  width: 8px;
-  background: linear-gradient(to left, rgba(0, 0, 0, 0.12), transparent);
+  width: 6px;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.08), transparent);
   pointer-events: none;
   z-index: 10;
 }
 
 /* 4. Thiết kế Bìa sách Cứng Cao Cấp (Hard Covers) */
 .page-cover {
-  cursor: pointer;
+  cursor: default;
 }
 
 .page-cover .page-content {

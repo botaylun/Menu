@@ -296,7 +296,7 @@ class MintyMenuFlipBook {
       maxWidth: 580,              // Chiều rộng lớn nhất trên desktop
       minHeight: 520,
       maxHeight: 880,
-      maxShadowOpacity: 0.75,     // Độ sâu của bóng uốn lượn 3D
+      maxShadowOpacity: 0.35,     // Độ sâu của bóng uốn lượn 3D
       showCover: true,            // Nhận diện Bìa trước và Bìa sau là bìa cứng (Hard Cover)
       mobileScrollSupport: false, // Tắt scroll mặc định để thao tác vuốt ưu tiên lật trang
       swipeDistance: 25,          // Khoảng cách vuốt tay (px) đủ để kích hoạt lật
@@ -305,7 +305,8 @@ class MintyMenuFlipBook {
       startPage: safeStartPage,
       autoSize: true,
       useMouseEvents: true,       // Bật kéo góc trang bằng chuột trên PC
-      showPageCorners: true,      // Hiệu ứng hé góc mời gọi kéo lật
+      showPageCorners: false,     // Tắt hé góc
+      disableFlipByClick: true,   // CHỈ cho vuốt hoặc bấm nút Trang trước/sau, KHÔNG lật khi nhấn vào trang
       clickEventForward: true     // Cho phép bấm nút phóng to ảnh hoặc admin bên trong trang
     });
 
@@ -345,7 +346,7 @@ class MintyMenuFlipBook {
           </div>
           <div class="cover-footer">
             <span>MINTYMART · PREMIUM GELATO</span>
-            <span class="hint">📖 Bấm hoặc vuốt mép trang để mở ➔</span>
+            <span class="hint">📖 Vuốt hoặc bấm Trang sau để mở ➔</span>
           </div>
         </div>
       </div>
@@ -556,6 +557,18 @@ class MintyMenuFlipBook {
     const cur = this.pageFlip.getCurrentPageIndex();
     const total = this.pageFlip.getPageCount();
     const isPortrait = this.pageFlip.getOrientation() === 'portrait';
+
+    // Cập nhật vị trí căn giữa cho bìa sách (tránh mảng trắng trống)
+    const wrapper = document.querySelector('.book-wrapper');
+    if (wrapper) {
+      if (cur === 0) {
+        wrapper.className = 'book-wrapper cover-front';
+      } else if (cur >= total - 1) {
+        wrapper.className = 'book-wrapper cover-back';
+      } else {
+        wrapper.className = 'book-wrapper open-spread';
+      }
+    }
 
     // Cập nhật text trạng thái
     const statusEl = document.getElementById(this.statusId);
