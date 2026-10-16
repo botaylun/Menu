@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
+const mongoose = require('mongoose');
 
 // Khởi tạo Express App
 const app = express();
@@ -22,11 +23,14 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Endpoint kiểm tra sức khỏe hệ thống (Health Check)
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
+  await connectDB();
+  const dbState = mongoose.connection.readyState;
   res.json({
     status: 'online',
     appName: 'MintyMart Backend API',
-    database: 'MongoDB',
+    database: dbState === 1 ? 'Connected (MongoDB Atlas)' : 'Disconnected',
+    databaseState: dbState,
     timestamp: new Date().toISOString(),
   });
 });

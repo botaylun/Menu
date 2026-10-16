@@ -31,17 +31,16 @@ exports.getCoverSettings = async (req, res) => {
 exports.updateCoverSettings = async (req, res) => {
   try {
     const newSettings = req.body;
-    let setting = await Setting.findOne({ key: 'cover_settings' });
-    if (!setting) {
-      setting = new Setting({
-        key: 'cover_settings',
-        value: { ...defaultCover, ...newSettings },
-      });
-    } else {
-      setting.value = { ...defaultCover, ...setting.value, ...newSettings };
-      setting.updatedAt = new Date();
-    }
-    await setting.save();
+    const setting = await Setting.findOneAndUpdate(
+      { key: 'cover_settings' },
+      {
+        $set: {
+          value: { ...defaultCover, ...newSettings },
+          updatedAt: new Date()
+        }
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
 
     return res.json({
       success: true,

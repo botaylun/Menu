@@ -201,29 +201,32 @@ const CKEY = 'mintymart_cover_v1';
 let COVER_DATA = null;
 try { COVER_DATA = JSON.parse(localStorage.getItem(CKEY) || 'null'); } catch(e){}
 
+let hasRendered = false;
+function instantInit() {
+  if (hasRendered) return;
+  hasRendered = true;
+  build(); // Hiển thị menu NGAY TỨC THÌ (0ms), không để người dùng chờ mạng
+}
+
 async function syncWithBackend() {
+  instantInit();
   if (typeof mintyApi !== 'undefined') {
     try {
-      const online = await mintyApi.checkHealth();
-      if (online) {
-        const data = await mintyApi.getMenu();
-        if (data) {
-          isMongo = true;
-          MONGO_DATA = data;
-          if (data.cover) {
-            COVER_DATA = data.cover;
-            try { localStorage.setItem(CKEY, JSON.stringify(data.cover)); } catch(e){}
-          }
-          build();
-          return;
+      // Gọi trực tiếp getMenu() tải dữ liệu MongoDB, bỏ bước checkHealth thừa
+      const data = await mintyApi.getMenu();
+      if (data && data.items && data.items.length) {
+        isMongo = true;
+        MONGO_DATA = data;
+        if (data.cover) {
+          COVER_DATA = data.cover;
+          try { localStorage.setItem(CKEY, JSON.stringify(data.cover)); } catch(e){}
         }
+        build(); // Cập nhật lại sách trong nền nếu có món mới từ MongoDB
       }
     } catch (e) {
-      console.warn('Backend sync failed:', e);
+      console.warn('Backend sync in background, using local cache:', e);
     }
   }
-  isMongo = false;
-  build();
 }
 
 function build(){
@@ -547,13 +550,13 @@ function doSearch(){
 $('srchBtn').onclick=()=>{$('sq').value='';doSearch();$('dSearch').showModal();$('sq').focus()};
 $('sq').oninput=doSearch;
 
-// Tải cuốn sách khi DOM đã nạp hoàn tất
-window.addEventListener('DOMContentLoaded', () => {
-  syncWithBackend();
-});
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  syncWithBackend();
+// Hiển thị sách ngay lập tức khi tải xong DOM
+instantInit();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', instantInit);
 }
+// Chạy đồng bộ MongoDB ngầm trong nền không làm nghẽn hiển thị
+setTimeout(syncWithBackend, 100);
 </script>
 </body>
 </html>

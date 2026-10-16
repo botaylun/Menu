@@ -478,12 +478,10 @@
   border-color: rgba(233, 190, 85, 0.4);
 }
 
-/* 8. Tinh chỉnh danh sách món trong trang ruột */
+/* 8. Tinh chỉnh danh sách món trong trang ruột - Fix cứng trang sách */
 .page-inner .list {
   flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
+  overflow: hidden;
   list-style: none;
   margin: 0;
   padding: 0;
