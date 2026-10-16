@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="vi">
 <head>
 <meta charset="utf-8">
@@ -6,9 +6,10 @@
 <title>MintyMart · Thực đơn kem</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&family=Noto+Serif:wght@400;600&display=swap">
 <style>
-:root{--bg:#0b0b0b;--page:#161512;--page2:#1b1a17;--ink:#f2eee4;--mut:#a8a396;--gold:#e9be55;--line:#2c2a25;--thumb:#26241f;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#efece4;--page:#fbf9f3;--page2:#f5f2ea;--ink:#1d1b16;--mut:#5f5a4e;--gold:#8a5f00;--line:#ddd8c9;--thumb:#e8e3d4;color-scheme:light}}
-:root[data-theme="dark"]{--bg:#0b0b0b;--page:#161512;--page2:#1b1a17;--ink:#f2eee4;--mut:#a8a396;--gold:#e9be55;--line:#2c2a25;--thumb:#26241f;color-scheme:dark}
+:root{--bg:#0b0b0b;--page:#161512;--page2:#1b1a17;--ink:#f2eee4;--mut:#a8a396;--gold:#e9be55;--line:#2c2a25;--thumb:#26241f;--btn-gold-bg:#e9be55;--btn-gold-txt:#110f0b;--btn-sec-bg:#22201b;--btn-sec-bd:#524b3e;--btn-sec-txt:#f2eee4;--holder:#8a8477;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#efece4;--page:#fbf9f3;--page2:#f5f2ea;--ink:#1d1b16;--mut:#5f5a4e;--gold:#8a5f00;--line:#ddd8c9;--thumb:#e8e3d4;--btn-gold-bg:#9e6a00;--btn-gold-txt:#ffffff;--btn-sec-bg:#ede8dd;--btn-sec-bd:#c4baa4;--btn-sec-txt:#1d1b16;--holder:#766f60;color-scheme:light}}
+:root[data-theme="light"]{--bg:#efece4;--page:#fbf9f3;--page2:#f5f2ea;--ink:#1d1b16;--mut:#5f5a4e;--gold:#8a5f00;--line:#ddd8c9;--thumb:#e8e3d4;--btn-gold-bg:#9e6a00;--btn-gold-txt:#ffffff;--btn-sec-bg:#ede8dd;--btn-sec-bd:#c4baa4;--btn-sec-txt:#1d1b16;--holder:#766f60;color-scheme:light}
+:root[data-theme="dark"]{--bg:#0b0b0b;--page:#161512;--page2:#1b1a17;--ink:#f2eee4;--mut:#a8a396;--gold:#e9be55;--line:#2c2a25;--thumb:#26241f;--btn-gold-bg:#e9be55;--btn-gold-txt:#110f0b;--btn-sec-bg:#22201b;--btn-sec-bd:#524b3e;--btn-sec-txt:#f2eee4;--holder:#8a8477;color-scheme:dark}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',system-ui,sans-serif;min-height:100vh}
@@ -39,7 +40,7 @@ h1{font-size:clamp(26px,4.4vw,38px);line-height:1.15}
 .foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
 .foot b{font:400 20px 'Noto Serif',serif;color:var(--gold);letter-spacing:0}
 .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px}
-.btn{border:1px solid var(--line);background:none;color:var(--ink);font:500 13px 'Be Vietnam Pro',sans-serif;padding:0 18px;min-height:44px;border-radius:6px;cursor:pointer}
+.btn{border:1px solid var(--btn-sec-bd);background:var(--btn-sec-bg);color:var(--btn-sec-txt);font:600 13px 'Be Vietnam Pro',sans-serif;padding:0 18px;min-height:42px;border-radius:8px;cursor:pointer;transition:all .2s ease;display:inline-flex;align-items:center;justify-content:center}
 .btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
 .btn:disabled{opacity:.35;cursor:default}
 .mid{text-align:center;font-size:12px;color:var(--mut)}
@@ -57,11 +58,11 @@ dialog{background:var(--page);color:var(--ink);border:1px solid var(--line);bord
 dialog::backdrop{background:rgba(0,0,0,.6)}
 dialog h3{font:400 22px 'Noto Serif',serif;margin:0 0 14px}
 dialog label{display:block;font-size:12px;color:var(--mut);margin:10px 0 4px}
-dialog input,dialog select,dialog textarea{width:100%;min-height:44px;background:var(--page2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 12px;font:400 15px 'Be Vietnam Pro',sans-serif}
+dialog input,dialog select,dialog textarea{width:100%;min-height:44px;background:var(--page2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 12px;font:400 15px 'Be Vietnam Pro',sans-serif}dialog input::placeholder,dialog textarea::placeholder,input::placeholder,textarea::placeholder{color:var(--holder)!important;opacity:1!important}
 dialog textarea{min-height:160px;font-size:12px}
 .row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-.err{color:#e5634f;font-size:12px;min-height:16px;margin-top:8px}
-.btn.gold{background:var(--gold);border-color:var(--gold);color:#111}
+.err{color:#e5634f;font-size:12px;min-height:16px;margin-top:8px}.paste-zone{border:2px dashed var(--line);border-radius:8px;padding:10px 12px;margin-top:4px;cursor:pointer;text-align:center;font-size:12px;color:var(--mut);transition:all .2s;min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--page2)}.paste-zone:hover,.paste-zone.drag-over{border-color:var(--gold);color:var(--gold);background:rgba(233,190,85,.06)}.paste-zone.has-img{border-color:rgba(233,190,85,.5);color:var(--gold)}.paste-preview{width:44px;height:44px;border-radius:6px;object-fit:cover;flex:none}
+.btn.gold{background:var(--btn-gold-bg)!important;border-color:var(--btn-gold-bg)!important;color:var(--btn-gold-txt)!important;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.18)}.btn.gold:hover:not(:disabled){filter:brightness(1.12);color:var(--btn-gold-txt)!important}
 .list li.bh{display:block;min-height:0;padding:16px 0 8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
 .hb{display:flex;gap:8px}
 .del.ed:hover{color:var(--gold);border-color:var(--gold)}
@@ -112,7 +113,7 @@ dialog.lb{width:min(480px,94vw);padding:14px;text-align:center;position:relative
 <div class="nav"><button class="btn" id="prev">← Trang trước</button><div class="mid"><div id="status"></div><div class="seg" id="seg"></div></div><button class="btn" id="next">Trang sau →</button></div>
 </div>
 <dialog id="dLogin"><h3>Đăng nhập Admin</h3><label for="lu">Tên đăng nhập</label><input id="lu" autocomplete="username"><label for="lp">Mật khẩu</label><input id="lp" type="password" autocomplete="current-password"><div class="err" id="le"></div><div class="row"><button class="btn" data-close>Hủy</button><button class="btn gold" id="lgo">Đăng nhập</button></div></dialog>
-<dialog id="dAdd"><h3 id="at">Thêm món mới</h3><label for="an">Tên món</label><input id="an" maxlength="80"><label for="ap">Giá (VNĐ)</label><input id="ap" type="number" inputmode="numeric" min="0" step="500"><label for="ag">Khu vực</label><select id="ag"></select><div id="nzBox" style="display:none;margin-top:6px;padding:4px 12px 12px;border:1px dashed var(--gold);border-radius:8px"><label for="nzn">Tên khu vực mới</label><input id="nzn" maxlength="40" placeholder="Ví dụ: Mỹ, Châu Âu, Đài Loan"><label for="nzf">Cờ / biểu tượng (không bắt buộc)</label><input id="nzf" maxlength="8" placeholder="Ví dụ: 🇺🇸 (để trống sẽ dùng 🍦)"><label for="nzd">Mô tả ngắn (không bắt buộc)</label><input id="nzd" maxlength="120" placeholder="Một câu giới thiệu khu này"></div><label for="ang">Hãng</label><input id="ang" list="bl" placeholder="Ví dụ: Mingo (để trống nếu không rõ)" maxlength="40"><datalist id="bl"></datalist><label for="ai">Ảnh (không bắt buộc)</label><input id="ai" type="file" accept="image/*"><label id="rml" style="display:none"><input type="checkbox" id="rm">Xóa ảnh hiện tại</label><div class="err" id="ae"></div><div class="row"><button class="btn" data-close>Hủy</button><button class="btn gold" id="asv">Lưu món</button></div></dialog>
+<dialog id="dAdd"><h3 id="at">Thêm món mới</h3><label for="an">Tên món</label><input id="an" maxlength="80"><label for="ap">Giá (VNĐ)</label><input id="ap" type="number" inputmode="numeric" min="0" step="500"><label for="ag">Khu vực</label><select id="ag"></select><div id="nzBox" style="display:none;margin-top:6px;padding:4px 12px 12px;border:1px dashed var(--gold);border-radius:8px"><label for="nzn">Tên khu vực mới</label><input id="nzn" maxlength="40" placeholder="Ví dụ: Mỹ, Châu Âu, Đài Loan"><label for="nzf">Cờ / biểu tượng (không bắt buộc)</label><input id="nzf" maxlength="8" placeholder="Ví dụ: 🇺🇸 (để trống sẽ dùng 🍦)"><label for="nzd">Mô tả ngắn (không bắt buộc)</label><input id="nzd" maxlength="120" placeholder="Một câu giới thiệu khu này"></div><label for="ang">Hãng</label><input id="ang" list="bl" placeholder="Ví dụ: Mingo (để trống nếu không rõ)" maxlength="40"><datalist id="bl"></datalist><label for="ai">Ảnh (không bắt buộc)</label><input id="ai" type="file" accept="image/*"><div id="imgPasteZone" class="paste-zone" tabindex="0" title="Nhấn để dán ảnh từ clipboard (Ctrl+V) hoặc kéo thả ảnh vào đây"><span id="imgPasteText">📋 Ctrl+V để dán ảnh · hoặc kéo thả ảnh vào đây</span></div><label id="rml" style="display:none"><input type="checkbox" id="rm">Xóa ảnh hiện tại</label><div class="err" id="ae"></div><div class="row"><button class="btn" data-close>Hủy</button><button class="btn gold" id="asv">Lưu món</button></div></dialog>
 <dialog id="dImg" class="lb"><button class="lbx" type="button" aria-label="Đóng ảnh">×</button><img id="lbi" alt=""><div class="lbn" id="lbn"></div><div class="lbp" id="lbp"></div></dialog>
 <dialog id="dSearch"><h3>Tìm món</h3><input id="sq" type="search" placeholder="Gõ tên món hoặc hãng (không cần dấu)" autocomplete="off"><div class="sres" id="sr"></div><div class="row"><button class="btn" data-close>Đóng</button></div></dialog>
 <dialog id="dExp"><h3>Dữ liệu thay đổi (thêm / sửa / xóa)</h3><textarea id="et" readonly></textarea><div class="row"><button class="btn" data-close>Đóng</button><button class="btn gold" id="ecp">Sao chép</button></div></dialog>
@@ -459,35 +460,52 @@ $('admBtn').onclick=()=>{if(admin){$('abar').scrollIntoView({block:'nearest'});r
 async function login(){
   const u = $('lu').value.trim();
   const p = $('lp').value;
-  $('le').textContent = 'Đang kiểm tra...';
-  
-  if (typeof mintyApi !== 'undefined' && isMongo) {
+  if(!u || !p) return $('le').textContent = 'Vui lòng nhập tên đăng nhập và mật khẩu.';
+
+  // Hiển thị loading ngay
+  $('le').style.color = 'var(--gold)';
+  $('le').textContent = '⏳ Đang kết nối...';
+  const btn = $('lgo');
+  btn.disabled = true;
+  btn.textContent = 'Đang đăng nhập…';
+
+  // Luôn thử kết nối backend trực tiếp (không phụ thuộc isMongo)
+  if (typeof mintyApi !== 'undefined') {
     try {
       const res = await mintyApi.login(u, p);
       if (res && res.success) {
+        // Đánh dấu isMongo = true nếu chưa
+        isMongo = true;
         admin = true;
         try { sessionStorage.setItem('mm_admin', '1'); } catch(e){}
+        $('le').textContent = '';
+        btn.disabled = false;
+        btn.textContent = 'Đăng nhập';
         $('dLogin').close();
-        await syncWithBackend();
+        // Sync ngầm KHÔNG block UI
+        syncWithBackend();
         return;
       } else {
-        $('le').textContent = (res && res.message) || 'Sai tài khoản hoặc mật khẩu.';
+        $('le').style.color = '#e5634f';
+        $('le').textContent = '✗ ' + ((res && res.message) || 'Sai tài khoản hoặc mật khẩu.');
+        btn.disabled = false;
+        btn.textContent = 'Đăng nhập';
         return;
       }
     } catch(err) {
       console.warn('Lỗi kết nối login backend:', err);
+      $('le').style.color = '#e5634f';
+      $('le').textContent = '✗ Không kết nối được server. Kiểm tra mạng và thử lại.';
+      btn.disabled = false;
+      btn.textContent = 'Đăng nhập';
+      return;
     }
   }
 
-  // Tài khoản local đã bị xóa - chỉ dùng tài khoản MongoDB
-  $('le').textContent = 'Vui lòng kết nối internet và đăng nhập bằng tài khoản database.';
-
-
-
-
-
-
-
+  $('le').style.color = '#e5634f';
+  $('le').textContent = '✗ Không tìm thấy API client. Thử tải lại trang.';
+  btn.disabled = false;
+  btn.textContent = 'Đăng nhập';
 }
 $('lgo').onclick=login;$('lp').onkeydown=e=>{if(e.key==='Enter')login()};
 $('outBtn').onclick=()=>{admin=false;try{sessionStorage.removeItem('mm_admin')}catch(e){}build()};
@@ -496,19 +514,58 @@ function fillZ(){const s=$('ag');s.replaceChildren();ZONES.forEach(z=>{const o=d
 function fillB(){const k=$('ag').value,set=new Set();$('nzBox').style.display=k==='__new'?'block':'none';DATA.items.concat(custom).forEach(x=>{if(x.z===k&&x.b!==OTH)set.add(x.b)});const d=$('bl');d.replaceChildren();[...set].forEach(b=>{const o=document.createElement('option');o.value=b;d.append(o)})}
 $('ag').onchange=()=>{fillB();if($('ag').value==='__new')$('nzn').focus()};
 
-function openAdd(){editing=null;$('at').textContent='Thêm món mới';fillZ();['an','ap','ai','ang'].forEach(i=>$(i).value='');$('rm').checked=false;$('rml').style.display='none';$('ae').textContent='';$('dAdd').showModal();$('an').focus()}
+function openAdd(){editing=null;$('at').textContent='Thêm món mới';fillZ();['an','ap','ai','ang'].forEach(i=>$(i).value='');$('rm').checked=false;$('rml').style.display='none';$('ae').textContent='';clearPastedImg();$('dAdd').showModal();$('an').focus()}
 $('addBtn').onclick=openAdd;
 
-function openEdit(it){editing=it;$('at').textContent='Sửa món';fillZ();$('an').value=it.n;$('ap').value=it.v;$('ag').value=it.z;fillB();$('ang').value=it.b===OTH?'':it.b;$('ai').value='';$('rm').checked=false;$('rml').style.display=it.img?'block':'none';$('ae').textContent='';$('dAdd').showModal();$('an').focus()}
+function openEdit(it){editing=it;$('at').textContent='Sửa món';fillZ();$('an').value=it.n;$('ap').value=it.v;$('ag').value=it.z;fillB();$('ang').value=it.b===OTH?'':it.b;$('ai').value='';$('rm').checked=false;$('rml').style.display=it.img?'block':'none';$('ae').textContent='';clearPastedImg();$('dAdd').showModal();$('an').focus()}
+// Toast notification cho CRUD operations
+let _toastTimer = null;
+function showToast(msg, type) {
+  let toast = document.getElementById('mm-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'mm-toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);z-index:99999;padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:all 0.3s ease;opacity:0;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center';
+    document.body.appendChild(toast);
+  }
+  if (_toastTimer) clearTimeout(_toastTimer);
+  const bgMap = {loading:'#8b6914', success:'#1a6b3c', error:'#7b1a1a'};
+  const fgMap = {loading:'#fff3cd', success:'#d4edda', error:'#f8d7da'};
+  toast.style.background = bgMap[type] || bgMap.success;
+  toast.style.color = fgMap[type] || fgMap.success;
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  if (type !== 'loading') {
+    _toastTimer = setTimeout(function() {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2800);
+  }
+}
+
 async function delItem(it){
   if(!(await ask('Xóa món "'+it.n+'"?')))return;
+
   if(isMongo && typeof mintyApi !== 'undefined' && it._id && mintyApi.token){
+    // Optimistic: Xóa khỏi MONGO_DATA ngay, build lại UI không cần chờ
+    if(MONGO_DATA && MONGO_DATA.items) {
+      MONGO_DATA.items = MONGO_DATA.items.filter(x => x._id !== it._id);
+    }
+    build(); // Cập nhật UI ngay lập tức
+    showToast('🗑 Đang xóa…', 'loading');
     try {
       await mintyApi.deleteItem(it._id);
-      await syncWithBackend();
+      showToast('✓ Đã xóa món "' + it.n + '"', 'success');
+      // Sync lại từ server ngầm để đồng bộ
+      syncWithBackend();
       return;
     } catch(e){
-      console.warn('Lỗi xóa trên MongoDB, chuyển sang cục bộ:', e);
+      showToast('✗ Lỗi xóa: ' + e.message, 'error');
+      console.warn('Lỗi xóa trên MongoDB:', e);
+      // Rollback: sync lại để lấy data đúng
+      syncWithBackend();
+      return;
     }
   }
   if(it.ci!==undefined){custom.splice(it.ci,1);saveC()}else{edits[it.key]={...(edits[it.key]||{}),del:true};saveE()}
@@ -516,6 +573,95 @@ async function delItem(it){
 }
 $('rstBtn').onclick=async()=>{if(await ask('Khôi phục tất cả món và khu vực gốc đã sửa hoặc xóa? (Món và khu bạn tự thêm vẫn giữ nguyên.)','Khôi phục')){edits={};saveE();zedits={};saveZE();refreshZones();build()}};
 
+// ====== Paste Image Support ======
+let pastedImgData = null; // base64 string từ paste/drag
+
+function setPastedImg(base64, filename) {
+  pastedImgData = base64;
+  const zone = document.getElementById('imgPasteZone');
+  const txt = document.getElementById('imgPasteText');
+  if (!zone) return;
+  // Hiển thị preview thumbnail
+  zone.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = base64;
+  img.className = 'paste-preview';
+  const label = document.createElement('span');
+  label.textContent = filename || 'Ảnh đã dán';
+  label.style.cssText = 'font-size:12px;color:var(--gold);flex:1;text-align:left';
+  const clr = document.createElement('button');
+  clr.type = 'button';
+  clr.textContent = '✕';
+  clr.style.cssText = 'border:none;background:none;color:var(--mut);cursor:pointer;font-size:14px;padding:0 4px';
+  clr.onclick = (e) => { e.stopPropagation(); clearPastedImg(); };
+  zone.appendChild(img);
+  zone.appendChild(label);
+  zone.appendChild(clr);
+  zone.classList.add('has-img');
+  // Xóa file input để tránh dùng cả 2
+  document.getElementById('ai').value = '';
+}
+
+function clearPastedImg() {
+  pastedImgData = null;
+  const zone = document.getElementById('imgPasteZone');
+  if (!zone) return;
+  zone.innerHTML = '<span id="imgPasteText">📋 Ctrl+V để dán ảnh · hoặc kéo thả ảnh vào đây</span>';
+  zone.classList.remove('has-img');
+}
+
+function processImageFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  toThumb(file).then(b64 => setPastedImg(b64, file.name)).catch(() => {});
+}
+
+// Xử lý paste toàn dialog
+document.getElementById('dAdd').addEventListener('paste', (e) => {
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      e.preventDefault();
+      processImageFile(item.getAsFile());
+      return;
+    }
+  }
+});
+
+// Xử lý click vào paste zone => mở clipboard API
+document.getElementById('imgPasteZone').addEventListener('click', async () => {
+  if (pastedImgData) { clearPastedImg(); return; }
+  try {
+    const items = await navigator.clipboard.read();
+    for (const item of items) {
+      const imgType = item.types.find(t => t.startsWith('image/'));
+      if (imgType) {
+        const blob = await item.getType(imgType);
+        processImageFile(new File([blob], 'clipboard.' + imgType.split('/')[1], { type: imgType }));
+        return;
+      }
+    }
+    // Nếu không có ảnh trong clipboard, thông báo
+    const txt = document.getElementById('imgPasteText');
+    if (txt) { const old = txt.textContent; txt.textContent = '⚠ Không có ảnh trong clipboard'; setTimeout(() => { if(txt) txt.textContent = old; }, 2000); }
+  } catch(e) {
+    // Fallback: hướng dẫn dùng Ctrl+V
+  }
+});
+
+// Xử lý drag & drop vào paste zone
+const _pz = document.getElementById('imgPasteZone');
+_pz.addEventListener('dragover', (e) => { e.preventDefault(); _pz.classList.add('drag-over'); });
+_pz.addEventListener('dragleave', () => _pz.classList.remove('drag-over'));
+_pz.addEventListener('drop', (e) => {
+  e.preventDefault();
+  _pz.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) processImageFile(file);
+});
+
+// Reset pastedImgData khi đóng dialog
+document.getElementById('dAdd').addEventListener('close', clearPastedImg);
 function toThumb(file){return new Promise((res,rej)=>{const r=new FileReader();r.onerror=rej;r.onload=()=>{const im=new Image();im.onerror=rej;im.onload=()=>{const c=document.createElement('canvas');const S=Math.min(480,Math.min(im.width,im.height));c.width=c.height=S;const x=c.getContext('2d');const m=Math.min(im.width,im.height);x.drawImage(im,(im.width-m)/2,(im.height-m)/2,m,m,0,0,S,S);res(c.toDataURL('image/jpeg',.8))};im.src=r.result};r.readAsDataURL(file)})}
 
 $('asv').onclick=async()=>{
@@ -524,31 +670,111 @@ $('asv').onclick=async()=>{
   if(!(v>0))return $('ae').textContent='Vui lòng nhập giá hợp lệ.';
   const nzName=$('nzn').value.trim();
   if(z==='__new'&&!nzName)return $('ae').textContent='Vui lòng nhập tên khu vực mới.';
+
+  // Hiển thị loading trước khi xử lý ảnh
+  const saveBtn = $('asv');
+  saveBtn.disabled = true;
+  saveBtn.textContent = '⏳ Đang xử lý…';
+  $('ae').textContent = '';
+
   let img;const f=$('ai').files[0];
-  if(f){try{img=await toThumb(f)}catch(e){return $('ae').textContent='Không đọc được ảnh này.'}}else if(editing&&$('rm').checked)img=null;
-  
+  if(pastedImgData){img=pastedImgData;}else if(f){
+    try{
+      $('ae').style.color='var(--gold)';
+      $('ae').textContent='Đang nén ảnh…';
+      img=await toThumb(f);
+      $('ae').textContent='';
+    }catch(e){
+      saveBtn.disabled=false;
+      saveBtn.textContent='Lưu';
+      $('ae').style.color='#e5634f';
+      $('ae').textContent='Không đọc được ảnh này.';
+      return;
+    }
+  }else if(editing&&$('rm').checked)img=null;
+
   // Lưu lên MongoDB nếu online
   if(isMongo && typeof mintyApi !== 'undefined' && mintyApi.token){
     try {
+      let newZoneKey = null;
       if(z === '__new') {
         const flag = $('nzf').value.trim() || '🍦';
         const key = 'z_' + Date.now().toString(36);
+        saveBtn.textContent = '⏳ Đang thêm khu vực…';
         await mintyApi.addZone({ k: key, flag, short: nzName, name: 'Khu kem ' + nzName, desc: $('nzd').value.trim() || '' });
+        newZoneKey = key;
         z = key;
       }
+
+      // Optimistic update: cập nhật MONGO_DATA ngay trước khi request hoàn tất
       if(!editing){
-        await mintyApi.addItem({ z, b, n, v, img });
+        saveBtn.textContent = '⏳ Đang thêm món…';
+        const curPage = window.flipBook ? flipBook.getCurrentPageIndex() : 0;
+        const tempItem = { z, b, n, v, img, _id: '__temp_' + Date.now(), key: '__temp_' + Date.now() };
+        if(MONGO_DATA && MONGO_DATA.items) MONGO_DATA.items.push(tempItem);
+        build(curPage);
+        $('dAdd').close();
+        showToast('⏳ Đang lưu "' + n + '"…', 'loading');
+        const res = await mintyApi.addItem({ z, b, n, v, img });
+        const savedItem = (res && (res.item || res.data)) || null;
+        if(res && res.success && savedItem && MONGO_DATA) {
+          const idx = MONGO_DATA.items.findIndex(x => x._id === tempItem._id);
+          if(idx >= 0) MONGO_DATA.items[idx] = { ...savedItem, key: savedItem._id };
+          let targetP = window.flipBook ? flipBook.findPageOfItem(savedItem) : curPage;
+          if (targetP < 0) targetP = curPage;
+          build(targetP);
+          flipBook.highlightItem(MONGO_DATA.items.find(x => x._id === savedItem._id) || savedItem);
+          showToast('✓ Đã thêm món "' + n + '"', 'success');
+          saveBtn.disabled = false; saveBtn.textContent = 'Lưu';
+          await syncWithBackend(targetP);
+        } else {
+          showToast('✓ Đã lưu (đang đồng bộ)', 'success');
+          saveBtn.disabled = false; saveBtn.textContent = 'Lưu';
+          await syncWithBackend(curPage);
+        }
+        return;
       } else if(editing._id){
-        await mintyApi.updateItem(editing._id, { z, b, n, v, img });
+        const curPage = window.flipBook ? flipBook.getCurrentPageIndex() : 0;
+        saveBtn.textContent = '⏳ Đang cập nhật…';
+        // Cập nhật Optimistic ngay lập tức vào MONGO_DATA với ảnh vừa chọn
+        if(MONGO_DATA && MONGO_DATA.items) {
+          const idx = MONGO_DATA.items.findIndex(x => String(x._id) === String(editing._id));
+          if(idx >= 0) {
+            const finalImg = (img !== undefined) ? img : MONGO_DATA.items[idx].img;
+            MONGO_DATA.items[idx] = { ...MONGO_DATA.items[idx], z, b, n, v, img: finalImg };
+          }
+        }
+        build(curPage); // Render UI ngay lập tức với ảnh mới!
+        $('dAdd').close();
+        showToast('⏳ Đang lưu thay đổi…', 'loading');
+        const res = await mintyApi.updateItem(editing._id, { z, b, n, v, img });
+        const savedItem = (res && (res.item || res.data)) || null;
+        if(res && res.success) {
+          if (savedItem && MONGO_DATA && MONGO_DATA.items) {
+            const idx = MONGO_DATA.items.findIndex(x => String(x._id) === String(editing._id));
+            if (idx >= 0) {
+              MONGO_DATA.items[idx] = { ...savedItem, key: savedItem._id };
+            }
+          }
+          build(curPage); // Render lại để chắc chắn 100% hiển thị
+          showToast('✓ Đã cập nhật "' + n + '"', 'success');
+        } else {
+          showToast('⚠ Lưu có vấn đề, đang đồng bộ lại…', 'error');
+        }
+        saveBtn.disabled = false; saveBtn.textContent = 'Lưu';
+        await syncWithBackend(curPage);
+        return;
       }
-      $('dAdd').close();
-      await syncWithBackend();
-      return;
     } catch(err) {
-      console.warn('Lỗi lưu MongoDB, lưu vào localStorage:', err);
+      console.warn('Lỗi lưu MongoDB:', err);
+      showToast('✗ Lỗi lưu: ' + (err.message||'Kiểm tra kết nối mạng'), 'error');
+      saveBtn.disabled=false; saveBtn.textContent='Lưu';
+      syncWithBackend(); // Rollback bằng cách sync lại
+      return;
     }
   }
 
+  // Fallback: lưu local
   if(z==='__new'){
     const ex=ZONES.find(q=>norm(q.short)===norm(nzName));
     if(ex)z=ex.k;
@@ -560,6 +786,7 @@ $('asv').onclick=async()=>{
   else{const k=editing.key,o={...(edits[k]||{}),z,b,n,v};delete o.del;if(img!==undefined)o.img=img;edits[k]=o;saveE();target=editing}
   build();
   $('dAdd').close();
+  saveBtn.disabled=false; saveBtn.textContent='Lưu';
   if(target) flipBook.highlightItem(target);
 };
 

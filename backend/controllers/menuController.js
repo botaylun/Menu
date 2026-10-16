@@ -25,7 +25,7 @@ exports.getMenuData = async (req, res) => {
       Setting.findOne({ key: 'cover_settings' }).lean(),
     ]);
 
-    res.set('Cache-Control', 'public, s-maxage=15, stale-while-revalidate=59');
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     return res.json({
       success: true,
       data: {

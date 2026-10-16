@@ -5,83 +5,14 @@
  * ============================================================================
  */
 
-// 1. Module âm thanh lật trang chân thực (Web Audio API Synthesizer)
+// 1. Module âm thanh lật trang (Đã tắt hoàn toàn theo yêu cầu người dùng)
 class PaperAudioSynthesizer {
   constructor() {
-    this.ctx = null;
-    this.enabled = localStorage.getItem('minty_sound_enabled') !== '0'; // Mặc định bật
+    this.enabled = false;
   }
-
-  init() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) this.ctx = new AudioCtx();
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume().catch(() => { });
-    }
-  }
-
-  play() {
-    if (!this.enabled) return;
-    try {
-      this.init();
-      if (!this.ctx) return;
-      const ctx = this.ctx;
-      const now = ctx.currentTime;
-
-      // Tạo xung nhiễu hồng (Pink Noise) mô phỏng sợi giấy ma sát
-      const bufferSize = Math.floor(ctx.sampleRate * 0.16); // 160ms
-      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-      const data = buffer.getChannelData(0);
-      let b0 = 0, b1 = 0, b2 = 0;
-      for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        b0 = 0.99886 * b0 + white * 0.0555179;
-        b1 = 0.99332 * b1 + white * 0.0750759;
-        b2 = 0.96900 * b2 + white * 0.1538520;
-        data[i] = (b0 + b1 + b2) * 1.6;
-      }
-
-      const noise = ctx.createBufferSource();
-      noise.buffer = buffer;
-
-      // Bộ lọc dải thông (Bandpass) quét tần số từ cao xuống thấp khi vạt giấy lướt qua
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(1450, now);
-      filter.frequency.exponentialRampToValueAtTime(420, now + 0.14);
-      filter.Q.value = 1.4;
-
-      // Bộ lọc cắt bớt dải trầm để âm thanh thanh thoát
-      const hp = ctx.createBiquadFilter();
-      hp.type = 'highpass';
-      hp.frequency.setValueAtTime(320, now);
-
-      // Đường bao âm lượng (Envelope ADSR)
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(0.25, now + 0.025);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-
-      noise.connect(filter);
-      filter.connect(hp);
-      hp.connect(gain);
-      gain.connect(ctx.destination);
-
-      noise.start(now);
-      noise.stop(now + 0.16);
-    } catch (e) {
-      // Trình duyệt chưa cho phép phát âm thanh tự động (chờ user click)
-    }
-  }
-
-  toggle() {
-    this.enabled = !this.enabled;
-    localStorage.setItem('minty_sound_enabled', this.enabled ? '1' : '0');
-    if (this.enabled) this.play();
-    return this.enabled;
-  }
+  init() {}
+  play() {}
+  toggle() { return false; }
 }
 
 // 2. Class Quản lý Cuốn sách Menu 3D
@@ -148,9 +79,39 @@ class MintyMenuFlipBook {
     this._updateNavigation();
   }
 
-  // Cập nhật lại dữ liệu khi Admin sửa/thêm/xóa món
-  update(zones, items, admin = false, coverData = null) {
-    const curPage = this.pageFlip ? this.pageFlip.getCurrentPageIndex() : 0;
+  // Lấy chỉ số trang hiện tại của cuốn sách
+  getCurrentPageIndex() {
+    if (!this.pageFlip) return 0;
+    try {
+      const idx = this.pageFlip.getCurrentPageIndex();
+      return typeof idx === 'number' && !isNaN(idx) ? idx : 0;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  // Tìm trang chứa món cụ thể
+  findPageOfItem(item) {
+    if (!item || !this.pageData) return -1;
+    const targetId = item._id || item.key;
+    for (let i = 0; i < this.pageData.length; i++) {
+      const p = this.pageData[i];
+      if (p.rows && p.rows.some(r => (r._id && r._id === targetId) || (r.key && r.key === targetId) || (r.n === item.n && r.v === item.v))) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  // Cập nhật lại dữ liệu khi Admin sửa/thêm/xóa món (giữ nguyên trang đang xem)
+  update(zones, items, admin = false, coverData = null, targetPage = null) {
+    let curPage = 0;
+    if (targetPage !== null && targetPage !== undefined && typeof targetPage === 'number') {
+      curPage = targetPage;
+    } else if (this.pageFlip) {
+      curPage = this.getCurrentPageIndex();
+    }
+
     this.zones = zones || [];
     this.items = items || [];
     this.adminMode = admin;
@@ -163,7 +124,10 @@ class MintyMenuFlipBook {
 
     this._buildPagesData();
     this._renderBookDOM();
-    this._initStPageFlip(curPage);
+
+    // Giới hạn trang an toàn
+    const safePage = Math.max(0, Math.min(curPage, this.pageData.length - 1));
+    this._initStPageFlip(safePage);
     this._renderTabs();
     this._updateNavigation();
   }
@@ -340,9 +304,14 @@ class MintyMenuFlipBook {
     const pageElements = bookEl.querySelectorAll('.page');
     this.pageFlip.loadFromHTML(pageElements);
 
+    if (safeStartPage > 0) {
+      try {
+        this.pageFlip.turnToPage(safeStartPage);
+      } catch (e) { }
+    }
+
     // Bắt các sự kiện lật trang
     this.pageFlip.on('flip', (e) => {
-      this.audio.play();
       this._updateNavigation();
       this._updateActiveTab();
     });
@@ -352,6 +321,11 @@ class MintyMenuFlipBook {
     });
 
     this.pageFlip.on('init', () => {
+      if (safeStartPage > 0) {
+        try {
+          this.pageFlip.turnToPage(safeStartPage);
+        } catch (e) { }
+      }
       this._updateNavigation();
       this._updateActiveTab();
     });

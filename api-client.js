@@ -30,10 +30,16 @@ class MintyApiClient {
     return false;
   }
 
-  // Lấy dữ liệu Menu từ MongoDB
+  // Lấy dữ liệu Menu từ MongoDB (luôn lấy dữ liệu mới nhất, không cache)
   async getMenu() {
     try {
-      const res = await fetch(`${API_BASE}/menu`, { method: 'GET', signal: AbortSignal.timeout(3000) });
+      const url = `${API_BASE}/menu?_t=${Date.now()}`;
+      const res = await fetch(url, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' },
+        signal: AbortSignal.timeout(15000), // Cho phép tải an toàn dữ liệu kèm ảnh base64
+      });
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {
@@ -42,6 +48,7 @@ class MintyApiClient {
         }
       }
     } catch (e) {
+      console.warn('getMenu error/timeout:', e);
       this.isOnline = false;
     }
     return null;
