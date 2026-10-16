@@ -93,7 +93,7 @@ class MintyMenuFlipBook {
     this.nextBtnId = options.nextBtnId || 'next';
     this.segId = options.segId || 'seg';
     this.tabsId = options.tabsId || 'tabs';
-    this.itemsPerPage = options.itemsPerPage || 14;
+    this.itemsPerPage = options.itemsPerPage || (window.innerWidth < 768 ? 6 : (window.innerWidth < 1024 ? 8 : 12));
 
     this.pageFlip = null;
     this.audio = new PaperAudioSynthesizer();
@@ -299,7 +299,7 @@ class MintyMenuFlipBook {
       maxHeight: 880,
       maxShadowOpacity: 0.35,     // Độ sâu của bóng uốn lượn 3D
       showCover: true,            // Nhận diện Bìa trước và Bìa sau là bìa cứng (Hard Cover)
-      mobileScrollSupport: false, // Tắt scroll mặc định để thao tác vuốt ưu tiên lật trang
+      mobileScrollSupport: true,  // Cho phép cuộn trang mượt mà trên mobile
       swipeDistance: 25,          // Khoảng cách vuốt tay (px) đủ để kích hoạt lật
       flippingTime: 750,          // Thời gian hoàn tất lật trang (0.75 giây mượt mà)
       usePortrait: true,          // Tự động chuyển 1 trang (Portrait) trên Mobile, 2 trang (Landscape) trên Desktop

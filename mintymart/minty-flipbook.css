@@ -481,7 +481,9 @@
 /* 8. Tinh chỉnh danh sách món trong trang ruột */
 .page-inner .list {
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
   list-style: none;
   margin: 0;
   padding: 0;
