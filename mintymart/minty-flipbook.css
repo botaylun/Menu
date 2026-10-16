@@ -1,0 +1,527 @@
+/* ==========================================================================
+   MintyMart 3D Page Flip - Stylesheet
+   Chuyên nghiệp hóa hiệu ứng lật trang 3D & gáy sách như cuốn menu thực tế
+   ========================================================================== */
+
+/* 1. Container bao bọc cuốn sách */
+.book-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1080px;
+  margin: 10px auto 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 2500px;
+  touch-action: pan-y;
+}
+
+/* Hiệu ứng bóng đổ nền mặt bàn dưới cuốn sách */
+.book-wrapper::after {
+  content: "";
+  position: absolute;
+  bottom: -14px;
+  left: 5%;
+  width: 90%;
+  height: 28px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(8px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* StPageFlip container */
+.st-page-flip {
+  position: relative;
+  margin: 0 auto;
+  box-shadow: 0 16px 45px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--line);
+  border-radius: 8px;
+  background: var(--page);
+  overflow: visible !important;
+}
+
+/* 2. Cấu trúc từng trang (Page & Page Content) */
+.page {
+  background-color: var(--page);
+  color: var(--ink);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.page-content {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 28px 28px 22px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  user-select: none;
+  background: var(--page);
+}
+
+/* Vân giấy mỹ thuật mờ tinh tế cho các trang ruột */
+.page-inner .page-content {
+  background: radial-gradient(circle at 50% 30%, var(--page) 0%, var(--page2) 100%);
+}
+
+/* 3. Hiệu ứng gáy sách (Spine Depth Shadow) khi mở 2 trang */
+/* Trang bên trái: Đổ bóng dần về phía mép phải (gáy sách ở giữa) */
+.page.--left .page-content::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 36px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.22) 80%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Trang bên phải: Đổ bóng dần từ mép trái (gáy sách ở giữa) sang */
+.page.--right .page-content::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 36px;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.22) 80%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Mép ngoài của trang có hiệu ứng mép giấy mờ nhẹ */
+.page.--left .page-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 8px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.12), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.page.--right .page-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.12), transparent);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* 4. Thiết kế Bìa sách Cứng Cao Cấp (Hard Covers) */
+.page-cover {
+  cursor: pointer;
+}
+
+.page-cover .page-content {
+  padding: 32px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  border: 1px solid rgba(233, 190, 85, 0.25);
+  background: linear-gradient(145deg, #181613 0%, #0d0c0b 100%);
+}
+
+[data-theme="light"] .page-cover .page-content {
+  background: linear-gradient(145deg, #2a241c 0%, #171410 100%);
+  color: #f6eedb;
+}
+
+/* Viền chỉ vàng sang trọng cho bìa */
+.cover-border {
+  height: 100%;
+  border: 1px solid rgba(233, 190, 85, 0.45);
+  border-radius: 6px;
+  padding: 30px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.cover-border::before,
+.cover-border::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--gold);
+}
+
+.cover-border::before {
+  top: 6px;
+  left: 6px;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.cover-border::after {
+  bottom: 6px;
+  right: 6px;
+  border-left: 0;
+  border-top: 0;
+}
+
+.cover-badge {
+  font-size: 11px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.cover-logo-box {
+  margin: 16px auto 10px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233, 190, 85, 0.18) 0%, transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(233, 190, 85, 0.4);
+}
+
+.cover-logo-box img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
+.cover-title {
+  font-family: 'Noto Serif', serif;
+  font-size: clamp(26px, 3.2vw, 34px);
+  color: var(--gold);
+  line-height: 1.25;
+  margin: 10px 0 8px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.cover-sub {
+  font-size: 13px;
+  color: var(--mut);
+  line-height: 1.6;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.cover-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px dotted var(--line);
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: .08em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.cover-footer .hint {
+  font-size: 11px;
+  color: var(--mut);
+  letter-spacing: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 5. Trang Mục Lục / Lời Chào (Intro Page) */
+.toc-title {
+  font-family: 'Noto Serif', serif;
+  font-size: 24px;
+  color: var(--gold);
+  margin: 12px 0 6px;
+}
+
+.toc-desc {
+  font-size: 13px;
+  color: var(--mut);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.toc-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--page2);
+  cursor: pointer;
+  transition: all .2s ease;
+  font-size: 14px;
+}
+
+.toc-item:hover {
+  border-color: var(--gold);
+  transform: translateX(4px);
+  color: var(--gold);
+}
+
+.toc-item span.flag {
+  font-size: 18px;
+  margin-right: 8px;
+}
+
+.toc-item span.page-num {
+  font-family: 'Noto Serif', serif;
+  font-size: 13px;
+  color: var(--gold);
+  opacity: .85;
+}
+
+/* 6. Bìa Sau (Back Cover) */
+.back-cover-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  gap: 12px;
+}
+
+.back-cover-box h3 {
+  font-family: 'Noto Serif', serif;
+  font-size: 22px;
+  color: var(--gold);
+  margin: 0;
+}
+
+.back-cover-box p {
+  font-size: 13px;
+  color: var(--mut);
+  line-height: 1.6;
+  max-width: 300px;
+  margin: 0;
+}
+
+.contact-card {
+  margin-top: 14px;
+  padding: 14px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--ink);
+  line-height: 1.8;
+  text-align: left;
+  width: 82%;
+  box-sizing: border-box;
+}
+
+.contact-card b {
+  color: var(--gold);
+}
+
+/* 7. Nút bật/tắt âm thanh trên thanh điều hướng */
+.sound-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 0 12px;
+  min-height: 36px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--page2);
+  color: var(--mut);
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.sound-toggle-btn:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+.sound-toggle-btn.active {
+  color: var(--gold);
+  border-color: rgba(233, 190, 85, 0.4);
+}
+
+/* 8. Tinh chỉnh danh sách món trong trang ruột */
+.page-inner .list {
+  flex: 1;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+
+.page-inner .list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  min-height: 52px;
+}
+
+.page-inner .list li.bh {
+  display: block;
+  min-height: 0;
+  padding: 12px 0 6px;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-bottom: 0;
+}
+
+.page-inner .list img {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: var(--thumb);
+  flex: none;
+  cursor: zoom-in;
+  transition: transform .15s ease;
+}
+
+.page-inner .list img:hover {
+  transform: scale(1.08);
+}
+
+.page-inner .nm {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.page-inner .pr {
+  flex: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gold);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Phóng to ảnh (Lightbox) */
+dialog.lb {
+  width: min(480px, 94vw);
+  padding: 14px;
+  text-align: center;
+  position: relative;
+  max-height: 92vh;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--page);
+}
+
+.lb img {
+  display: block;
+  width: 100%;
+  max-height: 66vh;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.lb .lbn {
+  font: 400 17px 'Noto Serif', serif;
+  margin: 12px 36px 2px;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.lb .lbp {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--gold);
+}
+
+.lb .lbx {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--page);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lb .lbx:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* Responsive tinh chỉnh cho điện thoại */
+@media (max-width: 899px) {
+  .book-wrapper {
+    margin: 6px auto 14px;
+  }
+
+  .page-content {
+    padding: 20px 18px 16px;
+  }
+
+  .cover-border {
+    padding: 20px 14px;
+  }
+
+  .cover-title {
+    font-size: 24px;
+  }
+
+  .cover-logo-box {
+    width: 76px;
+    height: 76px;
+  }
+
+  .cover-logo-box img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .page-inner .list li {
+    min-height: 48px;
+    padding: 5px 0;
+  }
+
+  .page-inner .nm {
+    font-size: 13px;
+  }
+
+  .page-inner .pr {
+    font-size: 13px;
+  }
+}
